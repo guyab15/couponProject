@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>company</title>
+    </head>
+    <h1>company page</h1>
+    <body>
+    <div th:if="${companyName}">
+    
+    name:<h2  th:text="${companyName}"/>
+    
+    </div>
+
+    </body>
+</html>
