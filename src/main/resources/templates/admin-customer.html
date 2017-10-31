@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.4/css/bootstrap.min.css}"
+	rel="stylesheet" media="screen" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<title>ADMIN-CUSTOMER</title>
+</head>
+<body>
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" th:href="@{/home}">Coupon WebSite</a>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+
+				<li><a href="/logout"><span
+						class="glyphicon glyphicon-log-in"></span> Logout </a></li>
+			</ul>
+			<ul class="nav navbar-nav">
+				<li><a th:href="home">AdminHome</a></li>
+				<li><a href="company">Admin-Company</a></li>
+				<li class="active"><a href="customer">Admin-Customer</a></li>
+			</ul>
+		</div>
+
+
+	</nav>
+
+	<div class="container" style="margin-top: 70px">
+		<h2>Admin Customer</h2>
+		<p>
+			<strong>Note:</strong> The <strong>data-parent</strong> attribute
+			makes sure that all collapsible elements under the specified parent
+			will be closed when one of the collapsible item is shown.
+		</p>
+		</div>
+</body>
+
+
+</html>

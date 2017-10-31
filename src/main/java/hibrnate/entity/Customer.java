@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 import com.google.common.base.MoreObjects;
 
@@ -17,8 +17,9 @@ public class Customer {
 	@GeneratedValue
 	private long id;
 	
+	@NotNull
 	private String custName;
-	
+	@NotNull
 	private String password;
 	
 	@ManyToMany

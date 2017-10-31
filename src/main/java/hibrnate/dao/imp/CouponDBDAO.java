@@ -34,7 +34,7 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Coupon c where c.endDate < NOW()");
-		List list = query.list();
+		List<Coupon> list = query.list();
 		session.close();
 
 		return list;
@@ -43,8 +43,8 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 	public void addCouponToCompany(long idCompany, long idCoupon) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		Company company = (Company) session.get(Company.class, idCompany);
-		Coupon coupon = (Coupon) session.get(Coupon.class, idCoupon);
+		Company company = session.get(Company.class, idCompany);
+		Coupon coupon = session.get(Coupon.class, idCoupon);
 		//add 
 		coupon.setCompany(company);
 		company.getCoupons().add(coupon);
@@ -110,7 +110,7 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 	public Coupon getCoupon(long id) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		Coupon coupon = (Coupon) session.get(Coupon.class, id);
+		Coupon coupon = session.get(Coupon.class, id);
 		session.close();
 
 		return coupon;

@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import hibrnate.dao.imp.CouponDBDAO;
+import hibrnate.entity.Company;
 
 public class Test {
 
@@ -173,10 +173,14 @@ public class Test {
 //		);
 	
 		
-		CouponDBDAO cd = new CouponDBDAO();
-		cd.getAllCoupons().forEach(x->{
-			System.out.println(x.getId());
-		});
+//		CouponDBDAO cd = new CouponDBDAO();
+//		cd.getAllCoupons().forEach(x->{
+//			System.out.println(x.getId());
+//		});
+		
+		Company company = new Company();
+		company.setPassword("1212");
+		System.out.println(company.getCompName());
 		
 	}
 		

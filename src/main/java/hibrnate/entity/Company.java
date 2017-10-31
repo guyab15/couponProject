@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
 import com.google.common.base.MoreObjects;
 
@@ -16,10 +17,13 @@ public class Company{
 	@GeneratedValue
 	private long id;
 
+	@NotNull
 	private String compName;
-
+	
+	@NotNull
 	private String password;
-
+	
+	@NotNull
 	private String email;
 	
 	@OneToMany
@@ -73,11 +77,9 @@ public class Company{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-//	@JsonProperty("coupons")
 	public Collection<Coupon> getCoupons() {
 		return coupons;
 	}
-//	@JsonProperty("coupons1")
 	public void setCoupons(Collection<Coupon> coupons) {
 		this.coupons = coupons;
 	}

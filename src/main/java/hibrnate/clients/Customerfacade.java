@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import hibrnate.dao.imp.CouponDBDAO;
 import hibrnate.dao.imp.CustomerDBDAO;
-import hibrnate.entity.Company;
 import hibrnate.entity.Coupon;
 import hibrnate.entity.CouponType;
 import hibrnate.entity.Customer;

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.annotations.CollectionType;
 
 import hibrnate.dao.CompanyDao;
 import hibrnate.dao.HibernateFactory;
@@ -51,7 +50,12 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company c where c.id= " + id);
 		List<Company> list = query.list();
+		System.out.println(list);
+		System.out.println(list.isEmpty());
 		//session.close();
+		if(list.isEmpty())
+			return null;
+		
 		
 		return list.get(0);
 
@@ -79,7 +83,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company ");
 		List<Company> list = query.list();
-		session.close();
+		//session.close();
 		
 		return list;
 	}
@@ -97,7 +101,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		Query query = session.createQuery("FROM Company c where c.compName = '" + name + "'");
 		List<Company> list = query.list();
 		session.getTransaction().commit();
-		session.close();
+		//session.close();
 
 		return list.size() > 0;
 	}
@@ -108,7 +112,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company c where c.compName = '" + compName + "'");
 		List<Company> list = query.list();
-		session.close();
+		//session.close();
 		
 		for (Company company : list) {
 			if (company.getPassword().equals(password))

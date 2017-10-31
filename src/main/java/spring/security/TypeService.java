@@ -4,7 +4,6 @@ package spring.security;
 import org.springframework.stereotype.Component;
 
 import hibrnate.clients.AdminFacade;
-import hibrnate.clients.CouponClientFacade;
 import hibrnate.dao.imp.CompanyDBDAO;
 import hibrnate.dao.imp.CustomerDBDAO;
 import hibrnate.entity.Company;

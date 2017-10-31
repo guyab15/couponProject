@@ -61,7 +61,7 @@ public class TypeUserDetailes implements UserDetailsService {
 		if (type.equals("admin")) {
 			r = rolesInit.getRolesAdmin();
 			
-			 userDetailes = new User("admin", "1234", r);
+			 userDetailes = new User("1", "1", r);
 		}
 		return userDetailes;
 	}

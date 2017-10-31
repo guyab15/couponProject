@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import spring.rest.AdminRestController;
 import spring.rest.CompanyRestController;
 import spring.rest.CustomerRestController;
 
@@ -25,6 +26,8 @@ public class MyAuthenticationProvaider extends AbstractUserDetailsAuthentication
 	CompanyRestController companyRestController;
 	@Autowired
 	CustomerRestController customerRestController;
+	@Autowired
+	AdminRestController adminRestController;
 	@Autowired
 	private HttpServletRequest request;
 
@@ -53,6 +56,11 @@ public class MyAuthenticationProvaider extends AbstractUserDetailsAuthentication
 			customerRestController.setPass(token.getCredentials().toString());
 			customerRestController.setUserName(token.getName());
 			customerRestController.init();
+		}
+		if (request.getParameter("type").equals("admin")) {
+			adminRestController.setPass(token.getCredentials().toString());
+			adminRestController.setUserName(token.getName());
+			adminRestController.init();
 		}
 	}
 

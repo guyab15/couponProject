@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,19 +26,27 @@ public class Coupon {
 	@GeneratedValue
 	private long id;
 	
+	@NotNull
 	private String title;
+	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@NotNull
 	private Date startDate;
+	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@NotNull
 	private Date endDate;
-
+	
+	@NotNull
 	private int amount;
-
+	
+	@NotNull
 	@Enumerated( EnumType.STRING )
 	private CouponType type;
 	
 	private String message;
-
+	
+	@NotNull
 	private double price;
 
 	private String image;

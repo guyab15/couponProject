@@ -2,6 +2,7 @@ package hibrnate.clients;
 
 import java.util.Collection;
 
+import hibernate.exption.CouponProjectException.CompanyException;
 import hibrnate.dao.imp.CompanyDBDAO;
 import hibrnate.dao.imp.CustomerDBDAO;
 import hibrnate.entity.Company;
@@ -13,11 +14,12 @@ public class AdminFacade implements CouponClientFacade {
 
 	public  AdminFacade() {	}
 
-	public void createCompany(Company comp) {
+	public void createCompany(Company comp) throws Exception{
+		
 		if(!companyDao.checkComp_name(comp.getCompName())){
 		companyDao.createCompany(comp);
 		}else{
-			System.out.println("שם משתמש תפוס");
+			throw new CompanyException("createCompany the name " + comp.getCompName() + " already exists");
 		}
 	}
 
@@ -30,9 +32,11 @@ public class AdminFacade implements CouponClientFacade {
 		companyDao.updateCompany(comp);
 	}
 
-	public Company getCompany(long id) {
-
-		return companyDao.getCompany(id);
+	public Company getCompany(long id) throws Exception{
+		Company company = companyDao.getCompany(id);
+		if(company == null)
+			throw new CompanyException("the company id "+id+" not exisst");
+		return company;
 	}
 
 	public Collection<Company> getAllCompany() {
@@ -65,8 +69,8 @@ public class AdminFacade implements CouponClientFacade {
 
 	@Override
 	public  CouponClientFacade login(String name, String password, ClientType ct) {
-		String userName = "admin";
-		String pass = "1234";
+		String userName ="1"; //"admin";
+		String pass = "1";//"1234";
 		if (userName.equals(name) && pass.equals(password)) {
 			return new AdminFacade();
 		}
