@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
@@ -31,10 +33,12 @@ public class Coupon {
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@NotNull
+	@Type(type="date")
 	private Date startDate;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@NotNull
+	@Type(type="date")
 	private Date endDate;
 	
 	@NotNull
@@ -52,11 +56,13 @@ public class Coupon {
 	private String image;
 	
 	@ManyToMany(mappedBy="coupons",fetch = FetchType.EAGER)
+	//@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	@JsonIgnore
 	private List<Customer> customers = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name="company_id")
+	//@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	@JsonIgnore
 	private Company company;
 

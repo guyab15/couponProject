@@ -14,6 +14,176 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+	$(document)
+			.ready(
+					function() {
+
+						$("#delete")
+								.click(
+										function() {
+											if ($("#gc-id").val()) {
+												var ask = confirm("are you shore you want delete this company");
+												if (ask == true) {
+													var myObject = new Object();
+													myObject.id = $("#gc-id").val();
+													myObject.compName = $(
+															"#gc-compName").val();
+													myObject.password = $(
+															"#gc-password").val();
+													myObject.email = $("#gc-email")
+															.val();
+
+													var myJson = JSON
+															.stringify(myObject);
+													console.log(myJson);
+
+													$.ajax({
+														type : "post",
+														url : "company/delete",
+														data : myJson,
+														contentType : "application/json; charset=UTF-8",
+														success : function(data,status) {
+															alert("Data: "
+																	+ data
+																	+ "\nStatus: "
+																	+ status
+																	+ data.compName);
+														},
+
+														statusCode : {
+
+															403 : function() {
+																// Only if your server returns a 403 status code can it come in this block. :-)
+																alert("Username already exist");
+															}
+														},
+														error : function(e) {
+
+															$(
+																	"#alertMassage")
+																	.text(
+																			e.responseJSON.message);
+															$(
+																	"#alertHidden")
+																	.removeClass(
+																			"hide");
+
+														}
+													});
+												}
+											}
+										});
+
+						$("#edit")
+								.click(
+										function() {
+
+											if ($("#gc-id").val()) {
+
+												var myObject = new Object();
+												myObject.id = $("#gc-id").val();
+												myObject.compName = $(
+														"#gc-compName").val();
+												myObject.password = $(
+														"#gc-password").val();
+												myObject.email = $("#gc-email")
+														.val();
+
+												var myJson = JSON
+														.stringify(myObject);
+
+												$
+														.ajax({
+															type : "post",
+															url : "company/update",
+															data : myJson,
+															contentType : "application/json; charset=UTF-8",
+															success : function(
+																	data,
+																	status) {
+																alert("Data: "
+																		+ data
+																		+ "\nStatus: "
+																		+ status
+																		+ data.compName);
+															},
+
+															statusCode : {
+
+																403 : function() {
+																	// Only if your server returns a 403 status code can it come in this block. :-)
+																	alert("Username already exist");
+																}
+															},
+															error : function(e) {
+
+																$(
+																		"#alertMassage")
+																		.text(
+																				e.responseJSON.message);
+																$(
+																		"#alertHidden")
+																		.removeClass(
+																				"hide");
+
+															}
+														});
+											}
+
+										});
+
+						$("#getcompanybutton")
+								.click(
+										function() {
+											var input = $("#input").val();
+											console.log(input);
+											$
+													.ajax({
+														type : "post",
+														url : "company/getCompanyById",
+														data : input,
+														contentType : "application/json; charset=UTF-8",
+														success : function(
+																data, status) {
+															$("#alertHidden")
+																	.addClass(
+																			"hide");
+															$("#gc-id").val(
+																	data.id);
+															$("#gc-compName")
+																	.val(
+																			data.compName);
+															$("#gc-password")
+																	.val(
+																			data.password);
+															$("#gc-email").val(
+																	data.email);
+														},
+														statusCode : {
+
+															403 : function() {
+																// Only if your server returns a 403 status code can it come in this block. :-)
+																alert("Username already exist");
+															}
+														},
+														error : function(e) {
+															/* $("#alertHidden").fadeIn("slow",function(){
+																 $(this).removeClass("hide");
+															}); */
+															$("#alertMassage")
+																	.text(
+																			e.responseJSON.message);
+															$("#alertHidden")
+																	.removeClass(
+																			"hide");
+
+														}
+													});
+
+										});
+					});
+</script>
 </head>
 <body>
 
@@ -23,7 +193,7 @@
 				<a class="navbar-brand" th:href="@{/home}">Coupon WebSite</a>
 			</div>
 			<ul class="nav navbar-nav navbar-right">
-
+				<li><a th:text="|hello ${userName}|"></a></li>
 				<li><a href="/logout"><span
 						class="glyphicon glyphicon-log-in"></span> Logout </a></li>
 			</ul>
@@ -41,18 +211,18 @@
 		<h2>Admin Company</h2>
 		<div th:if="${param.messageSuccess}" class="alert alert-success"
 			th:text="${session.message}"></div>
-		
+
 		<div th:if="${param.messageError}" class="alert alert-danger"
 			th:text="${session.message}"></div>
-		
+
 		<div th:if="${param.entity}" class="alert alert-success">
-		<p th:text="${company.id}"> </p>
-		<p th:text="${company.compName}"> </p>
-		<p th:text="${company.password}"> </p>
-		<p th:text="${company.email}"> </p>
-		
-			</div>
-		
+			<p th:text="${company.id}"></p>
+			<p th:text="${company.compName}"></p>
+			<p th:text="${company.password}"></p>
+			<p th:text="${company.email}"></p>
+
+		</div>
+
 		<div class="panel-group" id="accordion">
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -96,7 +266,7 @@
 							</div>
 						</form>
 
-						
+
 
 					</div>
 
@@ -112,31 +282,31 @@
 				</div>
 				<div id="collapse2" class="panel-collapse collapse">
 					<div class="panel-body">
-					<table class="table table-hover">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>COMPANY NAME</th>
-					<th>PASSWORD</th>
-					<th>EMAIL</th>
-					<!-- <th width="100"></th> -->
-					<!-- <th width="100"></th> -->
-				</tr>
-			</thead>
-			<tbody>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>COMPANY NAME</th>
+									<th>PASSWORD</th>
+									<th>EMAIL</th>
+									<!-- <th width="100"></th> -->
+									<!-- <th width="100"></th> -->
+								</tr>
+							</thead>
+							<tbody>
 
-				<tr th:each="compan : ${companes}">
-					<td th:text="${compan.id}"></td>
-					<td th:text="${compan.compName}"></td>
-					<td th:text="${compan.password}"></td>
-					<td th:text="${compan.email}"></td>
-									
-				</tr>
+								<tr th:each="compan : ${companes}">
+									<td th:text="${compan.id}"></td>
+									<td th:text="${compan.compName}"></td>
+									<td th:text="${compan.password}"></td>
+									<td th:text="${compan.email}"></td>
 
-			</tbody>
-		</table>
-					
-					
+								</tr>
+
+							</tbody>
+						</table>
+
+
 					</div>
 				</div>
 			</div>
@@ -161,21 +331,34 @@
 
 							</table>
 						</form> -->
-							<div class="form-group">
-								<label class="control-label col-sm-2">company id:</label>
-								<div class="col-sm-10">
-									<input type="number" class="form-control" id="name"
-										placeholder="Enter number" name="id" />
-								</div>
-							</div>
-							
-							
-							<div class="form-group">
+						<div class="form-group">
+							<div class="hide" id="alertHidden">
 
-								<div class="col-sm-offset-2 col-sm-10">
-									<button  class="btn btn-default">getCompany</button>
-								</div>
+								<div class="alert alert-danger" id="alertMassage"></div>
 							</div>
+
+							<label class="control-label col-sm-2">company id:</label>
+							<div class="col-sm-10">
+								<input type="number" class="form-control" id="input"
+									placeholder="Enter number" name="id" />
+							</div>
+						</div>
+
+
+						<div class="form-group">
+
+							<div class="col-sm-offset-2 col-sm-10">
+								<button class="btn btn-default" id="getcompanybutton">Get
+									company</button>
+							</div>
+							<p>&nbsp;</p>
+							<pre class="tab">id:<input id="gc-id" readonly="readonly" /> company name:<input
+									id="gc-compName" /> password:<input id="gc-password" /> email:<input
+									id="gc-email" /> <button id="edit">edit</button> <button
+									id="delete">delete</button>
+							</pre>
+
+						</div>
 
 
 

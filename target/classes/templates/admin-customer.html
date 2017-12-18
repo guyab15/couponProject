@@ -13,6 +13,263 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" th:inline="javascript">
+	$(document)
+	.ready(
+			function() {
+				$("#registerAddCustomer")
+				.click(
+						function() {
+							
+							$("#alertHidden2").addClass("hide");
+							$("#alertHidden1").addClass("hide");
+									var myObject = new Object();
+									myObject.custName = $("#nameCust").val();
+									myObject.password = $("#pwdCust").val();
+							if (myObject.custName!= ""  /*<![CDATA[*/ &&  /*]]>*/myObject.password!= "") {
+									
+									
+
+									var myJson = JSON
+											.stringify(myObject);
+
+									$.ajax({
+										type : "post",
+										url : "customer/addCustomer",
+										data : myJson,
+										contentType : "application/json; charset=UTF-8",
+										success : function(data,
+												status) {
+											console.log(data);
+											$(
+											"#alertMassage2")
+											.text(
+													data.message);
+									$(
+											"#alertHidden2")
+											.removeClass(
+													"hide");
+										},
+
+										statusCode : {
+
+											403 : function() {
+												// Only if your server returns a 403 status code can it come in this block. :-)
+												alert("Username already exist");
+											}
+										},
+										error : function(e) {
+
+											$(
+													"#alertMassage1")
+													.text(
+															e.responseJSON.message);
+											$(
+													"#alertHidden1")
+													.removeClass(
+															"hide");
+
+										}
+									});
+								
+							
+						}else{
+							$(
+							"#alertMassage1")
+							.text("one of input is empty ");
+					$(
+							"#alertHidden1")
+							.removeClass(
+									"hide");
+
+						}
+						
+						});
+	
+	$("#getCustomerbutton").click(
+			function(){
+				$(
+				"#alertHidden4")
+				.addClass(
+						"hide");
+				$(
+				"#alertHidden3")
+				.addClass(
+						"hide");
+				var input = $("#cId").val();
+				$
+						.ajax({
+							type : "post",
+							url : "customer/getCustomerById",
+							data : input,
+							contentType : "application/json; charset=UTF-8",
+							success : function(
+									data, status) {
+								$("#alertHidden3")
+										.addClass(
+												"hide");
+								$("#gc-id").val(
+										data.id);
+								$("#gc-custName")
+										.val(
+												data.custName);
+								$("#gc-password")
+										.val(
+												data.password);
+								
+							},
+							statusCode : {
+
+								403 : function() {
+									// Only if your server returns a 403 status code can it come in this block. :-)
+									alert("Username already exist");
+								}
+							},
+							error : function(e) {
+								
+								$("#alertMassage3")
+										.text(
+												e.responseJSON.message);
+								$("#alertHidden3")
+										.removeClass(
+												"hide");
+							}
+
+			});
+		});
+		
+	$("#edit")
+	.click(
+			function() {
+				$(
+				"#alertHidden4")
+				.addClass(
+						"hide");
+				$(
+				"#alertHidden3")
+				.addClass(
+						"hide");
+			
+
+				if ($("#cId").val()) {
+
+					var myObject = new Object();
+					myObject.id = $("#cId").val();
+					myObject.custName = $(
+							"#gc-custName").val();
+					myObject.password = $(
+							"#gc-password").val();
+					
+
+					var myJson = JSON
+							.stringify(myObject);
+
+					$
+							.ajax({
+								type : "post",
+								url : "customer/update",
+								data : myJson,
+								contentType : "application/json; charset=UTF-8",
+								success : function(
+										data,
+										status) {
+									$(
+									"#alertMassage4")
+									.text(
+											data.message);
+							$(
+									"#alertHidden4")
+									.removeClass(
+											"hide");
+								},
+
+								statusCode : {
+
+									403 : function() {
+										// Only if your server returns a 403 status code can it come in this block. :-)
+										alert("Username already exist");
+									}
+								},
+								error : function(e) {
+
+									$(
+											"#alertMassage3")
+											.text(
+													e.responseJSON.message);
+									$(
+											"#alertHidden3")
+											.removeClass(
+													"hide");
+
+								}
+							});
+				}
+
+			});
+		
+		
+	$("#delete")
+	.click(
+			function() {
+				if ($("#cId").val()) {
+					var ask = confirm("are you shore you want delete this customer");
+					if (ask == true) {
+						var myObject = new Object();
+						myObject.id = $("#cId").val();
+						myObject.compName = $("#gc-custName").val();
+						myObject.password = $("#gc-password").val();
+						
+
+						var myJson = JSON
+								.stringify(myObject);
+
+						$.ajax({
+							type : "post",
+							url : "customer/delete",
+							data : myJson,
+							contentType : "application/json; charset=UTF-8",
+							success : function(data,status) {
+								$(
+								"#alertMassage4")
+								.text(data.message);
+						$(
+								"#alertHidden4")
+								.removeClass(
+										"hide");
+							},
+
+							statusCode : {
+
+								403 : function() {
+									// Only if your server returns a 403 status code can it come in this block. :-)
+									alert("Username already exist");
+								}
+							},
+							error : function(e) {
+
+								$(
+										"#alertMassage3")
+										.text(
+												e.responseJSON.message);
+								$(
+										"#alertHidden3")
+										.removeClass(
+												"hide");
+
+							}
+						});
+					}
+				}
+			});
+
+		
+			
+			
+	});
+	
+	
+	
+	</script>
 	<title>ADMIN-CUSTOMER</title>
 </head>
 <body>
@@ -23,7 +280,7 @@
 				<a class="navbar-brand" th:href="@{/home}">Coupon WebSite</a>
 			</div>
 			<ul class="nav navbar-nav navbar-right">
-
+				<li><a th:text="|hello ${userName}|"></a></li>
 				<li><a href="/logout"><span
 						class="glyphicon glyphicon-log-in"></span> Logout </a></li>
 			</ul>
@@ -39,12 +296,160 @@
 
 	<div class="container" style="margin-top: 70px">
 		<h2>Admin Customer</h2>
-		<p>
-			<strong>Note:</strong> The <strong>data-parent</strong> attribute
-			makes sure that all collapsible elements under the specified parent
-			will be closed when one of the collapsible item is shown.
-		</p>
+		<div th:if="${param.messageSuccess}" class="alert alert-success"
+			th:text="${session.message}"></div>
+
+		<div th:if="${param.messageError}" class="alert alert-danger"
+			th:text="${session.message}"></div>
+
+		<div th:if="${param.entity}" class="alert alert-success">
+			<p th:text="${company.id}"></p>
+			<p th:text="${company.compName}"></p>
+			<p th:text="${company.password}"></p>
+			<p th:text="${company.email}"></p>
+
 		</div>
+
+		<div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion"
+							href="#collapse1">add customer</a>
+					</h4>
+				</div>
+				<div id="collapse1" class="panel-collapse collapse ">
+					<div class="panel-body">
+
+						
+							<div class="form-group">
+							<div class="hide" id="alertHidden2">
+								<div class="alert alert-success" id="alertMassage2">
+								</div>
+							</div>
+							<div class="hide" id="alertHidden1" >
+
+								<div class="alert alert-danger" id="alertMassage1"></div>
+							</div>
+								<label class="control-label col-sm-2">customer name:</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="nameCust"
+										placeholder="Enter name" name="custName" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2" for="pwd">Password:</label>
+								<div class="col-sm-10">
+									
+									<input type="password" class="form-control" id="pwdCust"
+										placeholder="Enter password" name="password" />
+								</div>
+							</div>
+							
+							<div class="form-group">
+
+								<div class="col-sm-offset-2 col-sm-10">
+									<button class="btn btn-default" id="registerAddCustomer">Register</button>
+								</div>
+							</div>
+					
+
+
+
+					</div>
+
+
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion"
+							href="#collapse2">see all customer</a>
+					</h4>
+				</div>
+				<div id="collapse2" class="panel-collapse collapse">
+					<div class="panel-body">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>CUSTOMER NAME</th>
+									<th>PASSWORD</th>
+									<!-- <th width="100"></th> -->
+									<!-- <th width="100"></th> -->
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr th:each="custom : ${customers}">
+									<td th:text="${custom.id}"></td>
+									<td th:text="${custom.custName}"></td>
+									<td th:text="${custom.password}"></td>
+
+								</tr>
+
+							</tbody>
+						</table>
+
+
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion"
+							href="#collapse3">see customer by id</a>
+					</h4>
+				</div>
+				<div id="collapse3" class="panel-collapse collapse">
+					<div class="panel-body">
+						
+						<div class="form-group">
+						<div class="hide" id="alertHidden4">
+								<div class="alert alert-success" id="alertMassage4">
+								</div>
+							</div>
+							<div class="hide" id="alertHidden3">
+
+								<div class="alert alert-danger" id="alertMassage3"></div>
+							</div>
+
+							<label class="control-label col-sm-2">customer id:</label>
+							<div class="col-sm-10">
+								<input type="number" class="form-control" id="cId"
+									placeholder="Enter number" name="id" />
+							</div>
+						</div>
+
+
+						<div class="form-group">
+
+							<div class="col-sm-offset-2 col-sm-10">
+								<button class="btn btn-default" id="getCustomerbutton">Get
+									customer</button>
+							</div>
+							<p>&nbsp;</p>
+							<pre class="tab">id:<input id="gc-id" readonly="readonly" /> customer name:<input
+									id="gc-custName" /> password:<input id="gc-password" />  <button id="edit">edit</button> <button
+									id="delete">delete</button>
+							</pre>
+
+						</div>
+
+
+
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+	
 </body>
 
 

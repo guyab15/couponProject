@@ -11,7 +11,7 @@
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password"></property>
 		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
-		<property name="show_sql">false</property>
+		<property name="show_sql">true</property>
 		<property name="hbm2ddl.auto">update</property> 
 		<!-- <property name="connection.pool_size">500</property> -->
 		<mapping class="hibrnate.entity.Company"/>

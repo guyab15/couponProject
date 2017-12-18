@@ -50,6 +50,7 @@ public class TypeUserDetailes implements UserDetailsService {
 			if (company == null)
 				return new User("www", "www", r);
 			 userDetailes = new User(company.getCompName(), company.getPassword(), r);
+			 logger.debug("the user is "+userName+" and role is company");
 		}
 		if (type.equals("customer")) {
 			customer = typeService.customerfindUserName(userName);
@@ -57,11 +58,13 @@ public class TypeUserDetailes implements UserDetailsService {
 			if (customer == null)
 				return new User("www", "www", r);
 			 userDetailes = new User(customer.getCustName(), customer.getPassword(), r);
+			 logger.debug("the user is "+userName+" and role is customer");
 		}
 		if (type.equals("admin")) {
 			r = rolesInit.getRolesAdmin();
 			
 			 userDetailes = new User("1", "1", r);
+			 logger.debug("the user is "+userName+" and role is admin");
 		}
 		return userDetailes;
 	}

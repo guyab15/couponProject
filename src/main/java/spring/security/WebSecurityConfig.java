@@ -12,14 +12,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-//	@Bean
-//	private AccessDeniedHandler accessDeniedHandler(){
-//	    return new CustomAccessDeniedHandler();
-//	}
+
 	
 	@Autowired
 	private MyAuthenticationProvaider myAuthenticationProvaider;
 	
+	 @Autowired
+	  private  CustomSuccessHandler customSuccessHandler;
+	 
+	
+	 
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
 		
@@ -31,12 +33,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	        .anyRequest().permitAll()
 	        .and()
 	    .formLogin()  
-	        .loginPage("/login") 
-	        .permitAll();
-		
+	        .loginPage("/login").successHandler(customSuccessHandler); 
+//	        .permitAll() ;
+		 
 		http
 		.logout()
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+		
+		http
+		.csrf().disable();
 		
     }
 	
@@ -50,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .withUser("a").password("a").roles("COMPANY");
     	auth
       .authenticationProvider(myAuthenticationProvaider);
+   
     }
     
     

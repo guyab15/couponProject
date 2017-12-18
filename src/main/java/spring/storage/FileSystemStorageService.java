@@ -1,5 +1,6 @@
 package spring.storage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -64,6 +65,28 @@ public class FileSystemStorageService implements StorageService {
     public Path load(String filename) {
         return rootLocation.resolve(filename);
     }
+    
+    
+    public boolean ifImageExsist(String image){
+    		File file = new File(rootLocation.toString());
+    		String[] s = file.list();
+    		for(int i=0;i<s.length;i++){
+    			if(s[i].equals(image))
+    				return true;
+    		}	
+    			
+    		return false;
+    }
+    
+    public byte[] getImageBytes(String imageName) throws IOException {
+    		if(imageName==null || !ifImageExsist(imageName))
+    			return new byte[0];
+    		File file = new File(rootLocation+"/"+imageName);
+    		byte[] fileContent = Files.readAllBytes(file.toPath());
+    		return fileContent;
+    	
+    }
+    
 
     @Override
     public Resource loadAsResource(String filename) {

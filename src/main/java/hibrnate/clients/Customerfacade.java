@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import hibernate.exption.CouponProjectException.CustomerException;
 import hibrnate.dao.imp.CouponDBDAO;
 import hibrnate.dao.imp.CustomerDBDAO;
 import hibrnate.entity.Coupon;
@@ -23,9 +24,15 @@ public class Customerfacade implements CouponClientFacade {
 	}
 	public Customer getCustomer(){
 		return customerDao.getCustomer(id);
-	}  
+	} 
+	public Collection<Coupon> getAllCoupons(){
+		return couponDao.getAllCoupons();
+	}
 
-	public void purchaseCoupon(Coupon cop) {
+	public Coupon getCouponById(long id){
+		return couponDao.getCoupon(id);
+	}
+	public void purchaseCoupon(Coupon cop) throws CustomerException {
 
 		if (!customerDao.checkIfCustomerBoughtCoupon(id, cop.getId())) {
 			// check if coupon expires
@@ -37,13 +44,13 @@ public class Customerfacade implements CouponClientFacade {
 					cop.setAmount(couponDao.getCoupon(cop.getId()).getAmount() - 1);
 					couponDao.updateCoupon(cop);
 				} else {
-					System.out.println("קופון אזל מהמלאי");
+					throw new CustomerException("קופון אזל מהמלאי");
 				}
 			} else {
-				System.out.println("קופון לא בתוקף");
+				throw new CustomerException("קופון לא בתוקף");
 			}
 		} else {
-			System.out.println("הקופון כבר נקנה");
+			throw new CustomerException("הקופון כבר נקנה");
 		}
 
 	}

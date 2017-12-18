@@ -3,15 +3,19 @@ package hibrnate.clients;
 import java.util.Collection;
 
 import hibernate.exption.CouponProjectException.CompanyException;
+import hibernate.exption.CouponProjectException.CustomerException;
 import hibrnate.dao.imp.CompanyDBDAO;
+import hibrnate.dao.imp.CouponDBDAO;
 import hibrnate.dao.imp.CustomerDBDAO;
 import hibrnate.entity.Company;
+import hibrnate.entity.Coupon;
 import hibrnate.entity.Customer;
 
 public class AdminFacade implements CouponClientFacade {
 	private CompanyDBDAO companyDao = new CompanyDBDAO();
 	private CustomerDBDAO customerDao = new CustomerDBDAO();
-
+	private CouponDBDAO couponDao = new CouponDBDAO();
+	
 	public  AdminFacade() {	}
 
 	public void createCompany(Company comp) throws Exception{
@@ -24,11 +28,11 @@ public class AdminFacade implements CouponClientFacade {
 	}
 
 	public void removeCompany(Company comp) {
-		//do
+		
 		companyDao.remove(comp);
 	}
 
-	public void updateCompany(Company comp) {
+	public void updateCompany(Company comp) throws CompanyException {
 		companyDao.updateCompany(comp);
 	}
 
@@ -42,12 +46,20 @@ public class AdminFacade implements CouponClientFacade {
 	public Collection<Company> getAllCompany() {
 		return companyDao.getAllCompanies();
 	}
+	public Collection<Coupon> getAllCoupons(){
+		return couponDao.getAllCoupons();
+	}
 
-	public void createCustomer(Customer cus) {
+	public void createCustomer(Customer cus) throws CustomerException {
 		if(!customerDao.checkIfCustomerNameExist(cus.getCustName())){
-			customerDao.createCustomer(cus);
+				try {
+				
+					customerDao.createCustomer(cus);
+				} catch (Exception e) {
+					throw new CustomerException(e.getMessage());
+				}
 			}else{
-				System.out.println("שם משתמש תפוס");
+				throw new CustomerException("the customer name exsist");
 			}
 	}
 
@@ -55,12 +67,15 @@ public class AdminFacade implements CouponClientFacade {
 		customerDao.removeCustomer(cus);
 	}
 
-	public void updateCustomer(Customer cus) {
+	public void updateCustomer(Customer cus) throws CustomerException {
 		customerDao.updateCustomer(cus);
 	}
 
-	public Customer getCustomer(long id) {
-		return customerDao.getCustomer(id);
+	public Customer getCustomer(long id) throws CustomerException {
+		Customer customer = customerDao.getCustomer(id);
+		if(customer == null)
+			throw new CustomerException("customer id "+id+" dont exsist");
+		return customer;	
 	}
 
 	public Collection<Customer> getAllCustomer() {

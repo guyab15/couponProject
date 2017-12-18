@@ -1,15 +1,306 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>company</title>
-    </head>
-    <h1>company page</h1>
-    <body>
-    <div th:if="${companyName}">
-    
-    name:<h2  th:text="${companyName}"/>
-    
-    </div>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>COMPANY</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.4/css/bootstrap.min.css}"
+	rel="stylesheet" media="screen" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/  
+var datefield=document.createElement("input")
+datefield.setAttribute("type", "date")
+if ( datefield.type!="date"){ //if browser doesn't support input type="date", load files for jQuery UI Date Picker
+document.write('<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />\n');
+document.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"> <\/script>\n');
+document.write('<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"> <\/script>\n');
+}
+function IsSafariBrowser()
+{
+  var VendorName=window.navigator.vendor;
+  return ((VendorName.indexOf('Apple') > -1) &&
+          (window.navigator.userAgent.indexOf('Safari') > -1));
+}
+	$(document).ready(
 
-    </body>
+	function() {
+		 if (datefield.type!="date"){ //if browser doesn't support input type="date", initialize date picker widget:
+		        jQuery(function($){ //on document.ready
+		            $('#startDate').datepicker({
+		                dateFormat: 'yy-mm-dd'
+		            });
+		            $('#endDate').datepicker({
+		                dateFormat: 'yy-mm-dd'
+		            });
+		        })
+		    }
+
+		$("form").submit(function(event) {
+			$("#alertHiddend").addClass("hide");
+			$("#alertHiddens").addClass("hide");
+
+			event.preventDefault();
+
+			var start = document.forms["myForm"]["startDate"].value;
+			var end = document.forms["myForm"]["endDate"].value;
+			var startDate = new Date(start);
+			var endDate = new Date(end);
+			if (startDate > endDate) {
+				console.log("biger");
+				$("#alertMassaged").text("start day late the end date");
+				$("#alertHiddend").removeClass("hide");
+				return false;
+			}
+			if (startDate.getTime() === endDate.getTime()) {
+				$("#alertMassaged").text("start day and end date is same");
+				$("#alertHiddend").removeClass("hide");
+				return false;
+			}
+
+			var form = $("#myForm")[0];
+			var data = new FormData(form);
+			console.log(data);
+			$.ajax({
+				type : "post",
+				inctype : "multipart/form-data",
+				url : "/company/addCoupon/update",
+				data : data,
+				processData : false,
+				contentType : false,
+				success : function(data, status) {
+					$("#alertMassages").text(data.message);
+					$("#alertHiddens").removeClass("hide");
+				},
+
+				error : function(e) {
+					console.log(e);
+					/* $("#alertMassaged").text(e.responseJSON.message); */
+					$("#alertMassaged").text(e.responseText);
+					$("#alertHiddend").removeClass("hide");
+				}
+			});
+		});
+		
+	});
+	/*]]>*/
+</script>
+
+
+
+</head>
+<body>
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" th:href="@{/home}">Coupon WebSite</a>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a th:text="|hello ${userName}|"></a></li>
+				<li><a href="/logout"><span
+						class="glyphicon glyphicon-log-in"></span> Logout </a></li>
+			</ul>
+			<ul class="nav navbar-nav">
+				<li class="active"><a th:href="@{/company}">CompanyHome</a></li>
+				<li><a href="company/addCoupon">addCoupon</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div class="panel-body" style="margin-top: 70px">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>AMOUNT</th>
+					<th>END DATE</th>
+					<th>IMAGE</th>
+					<th>MESSAGE</th>
+					<th>PRICE</th>
+					<th>TITLE</th>
+					<th>TYPE</th>
+					<th>EDIT</th>
+					<th>DELETE</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="coup : ${coupons}">
+					<tr>
+						<td th:text="${coup.id}"></td>
+						<td th:text="${coup.amount}"></td>
+						<td th:text="${coup.endDate}"></td>
+						<td><img alt="image" th:src="@{|/company/pic/${coup.image}|}"
+							height="42" width="42" /></td>
+						<td th:text="${coup.message}"></td>
+						<td th:text="${coup.price}"></td>
+						<td th:text="${coup.title}"></td>
+						<td th:text="${coup.type}"></td>
+						<td><button type="button" class="btn btn-info"
+								th:onclick="|edit(${coup.id},'${coup.type}')|">EDIT</button></td>
+						<td><button type="button" class="btn btn-danger"
+						th:onclick="|deleteCoupon(${coup.id})|">DELETE</button></td>
+					</tr>
+					<tr style="display: none;" th:id="${coup.id}" bgcolor="#c4c4c4">
+						<td colspan="10">
+							<div class="hide" id="alertHiddens">
+								<div class="alert alert-success" id="alertMassages"></div>
+							</div>
+							<div class="hide" id="alertHiddend">
+
+								<div class="alert alert-danger" id="alertMassaged"></div>
+							</div>
+							<form id="myForm" class="form-horizontal"
+								enctype="multipart/form-data">
+								
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="id">ID:</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control" id="id"
+											th:value="${coup.id}" name="id" readonly="readonly" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="title">Title:</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="title"
+											th:value="${coup.title}" placeholder="Enter title"
+											name="title" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="amount">Amount:</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control" id="amount"
+											th:value="${coup.amount}" placeholder="Enter amount"
+											name="amount" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="startDate">Start
+										date:</label>
+									<div class="col-sm-10">
+										<input type="date" class="form-control" id="startDate"
+											th:value="${coup.startDate}" placeholder="Enter start date"
+											name="startDate" required="required" />
+
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="endDate">End
+										date:</label>
+									<div class="col-sm-10">
+										<input type="date" class="form-control" id="endDate"
+											th:value="${coup.endDate}" placeholder="Enter end date"
+											name="endDate" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="message">Message:</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="message"
+											th:value="${coup.message}" placeholder="Enter message"
+											name="message" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="price">Price:</label>
+									<div class="col-sm-10">
+										<input type="number" class="form-control" id="price"
+											th:value="${coup.price}" placeholder="Enter price"
+											name="price" required="required" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="type">Type:</label>
+									<div class="col-sm-10">
+										<select class="form-control" th:id="|type${coup.id}|"
+											name="type" required="required">
+											<option></option>
+											<option>RESTURANS</option>
+											<option>ELECTRICITY</option>
+											<option>FOOD</option>
+											<option>HEALTH</option>
+											<option>SPORTS</option>
+											<option>CAMPING</option>
+											<option>TRAVELLING</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-2" for="image">Image:</label>
+									<div class="col-sm-10">
+										<input type="file" class="form-control" id="image"
+											placeholder="if you want replace image" accept="image/*"
+											name="image" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<button type="submit" class="btn btn-default" id="btnSubmit">Update</button>
+									</div>
+								</div>
+							</form>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+
+
+	</div>
+
+
+
+
+
+
+
+
+</body>
+<script type="text/javascript">
+	function edit(id, type) {
+		console.log(id);
+		//document.getElementById(id).style.visibility = "visible";
+		var name = "#" + id;
+		$(name).toggle();
+		var name2 = "#type" + id;
+		$(name2).val(type);
+	}
+	function deleteCoupon(id){
+		var ans = confirm("you wont the coupon "+id+" delete forever");
+		var myObject = new Object();
+		myObject.id = id;
+		var myJson = JSON.stringify(myObject);
+		console.log(myJson);
+		if(ans){
+			$.ajax({
+				type : "post",
+				url : "/company/delete",
+				data :myJson,
+				contentType : "application/json; charset=UTF-8",
+				success : function(data, status) {
+					alert(data.message);
+					
+				},
+
+				error : function(e) {
+					console.log(e);
+					alert(e.responseText);
+					
+				}
+			});
+		}
+	}
+</script>
+
 </html>

@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.hibernate.Query;
 
+import hibernate.exption.CouponProjectException;
+import hibernate.exption.CouponProjectException.CustomerException;
 import hibrnate.dao.CustomerDao;
 import hibrnate.dao.HibernateFactory;
+import hibrnate.entity.Company;
 import hibrnate.entity.Coupon;
 import hibrnate.entity.Customer;
 import hibrnate.util.HibernateUtil;
@@ -34,12 +37,27 @@ public class CustomerDBDAO extends HibernateFactory implements CustomerDao {
 	}
 
 	@Override
-	public void updateCustomer(Customer c) {
-		session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
+	public void updateCustomer(Customer c) throws CustomerException {
+
+		Customer cust = getCustomer(c.getId());
+		if(cust.getCustName().equals(c.getCustName())){
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();	
 		session.update(c);
 		session.getTransaction().commit();
-		//session.close();
+		}else{
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			Query query = session.createQuery("FROM Customer c where c.custName = '" + c.getCustName() + "'");
+			List<Customer> list = (List<Customer>) query.list(); 
+			if(list.size() == 0){
+				session.update(c);
+				session.getTransaction().commit();
+				session.close();
+			}else{
+				throw new CouponProjectException.CustomerException("the name company is exisst");
+			}
+		}
 	}
 
 	@Override

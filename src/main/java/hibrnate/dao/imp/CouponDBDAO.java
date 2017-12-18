@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Query;
 
+import hibernate.exption.CouponProjectException.CouponException;
 import hibrnate.dao.CouponDao;
 import hibrnate.dao.HibernateFactory;
 import hibrnate.entity.Company;
@@ -84,7 +85,7 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 			
 		});
 
-
+		//session.close();
 	}
 	public void removeCouponFromCompany(long couponId, long companyId) {
 		session = HibernateUtil.getSessionFactory().openSession();
@@ -115,6 +116,22 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 
 		return coupon;
 	}
+	
+	public Coupon getCouponByTitle(String title) throws CouponException {
+		session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		Query query  =  session.createQuery("FROM Coupon c WHERE c.title = '"+title+"'");
+		Coupon coupon;
+		try {
+			coupon = (Coupon) query.list().get(0);
+		} catch (Exception e) {
+			throw new CouponException(e.getMessage());
+		}
+		
+		session.close();
+
+		return coupon;
+	}
 
 	@Override
 	public Collection<Coupon> getAllCoupons() {
@@ -132,7 +149,7 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 		session.beginTransaction();
 		Company company = session.get(Company.class, id);
 		List<Coupon> list = (List<Coupon>) company.getCoupons();
-		session.close();
+		//session.close();
 
 		return list;
 	}
@@ -142,7 +159,7 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 		session.beginTransaction();
 		Customer customer = session.get(Customer.class, id);
 		List<Coupon> list = (List<Coupon>) customer.getCoupns();
-		session.close();
+		//session.close();
 
 		return list;
 	}

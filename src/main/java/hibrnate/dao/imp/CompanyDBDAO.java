@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.hibernate.Query;
 
+
+import hibernate.exption.CouponProjectException;
+import hibernate.exption.CouponProjectException.CompanyException;
 import hibrnate.dao.CompanyDao;
 import hibrnate.dao.HibernateFactory;
 import hibrnate.entity.Company;
@@ -27,37 +30,63 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 
 	@Override
 	public void remove(Company c) {
+		
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		session.delete(c);
+		Company company = session.get(Company.class, c.getId());
+	
+		
+		
+		CouponDBDAO couponDbdao = new CouponDBDAO();
+		List<Coupon> list =  (List<Coupon>) company.getCoupons();
+		for (Coupon coupon : list) {
+			couponDbdao.removeCouponFromCustomers(coupon.getId());
+			couponDbdao.removeCouponFromCompany(coupon.getId(), company.getId());
+			couponDbdao.removeCoupon(coupon);
+		}
+		//session.update(company);
+		session.merge(company);
+		session.clear();
+
+		
+
+		session.delete(company);
 		session.getTransaction().commit();
-		session.close();
+		//session.close();
 
 	}
 
 	@Override
-	public void updateCompany(Company c) {
-		session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
+	public void updateCompany(Company c) throws CompanyException {
+		
+		Company comp = getCompany(c.getId());
+		if(comp.getCompName().equals(c.getCompName())){
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();	
 		session.update(c);
 		session.getTransaction().commit();
-		//session.close();
+		}else{
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			Query query = session.createQuery("FROM Company c where c.compName = '" + c.getCompName() + "'");
+			List<Company> list = (List<Company>) query.list(); 
+			if(list.size() == 0){
+				session.update(c);
+				session.getTransaction().commit();
+				session.close();
+			}else{
+				throw new CouponProjectException.CompanyException("the name company is exisst");
+			}
+		}
 	}
 
 	@Override
 	public Company getCompany(long id) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		Query query = session.createQuery("FROM Company c where c.id= " + id);
-		List<Company> list = query.list();
-		System.out.println(list);
-		System.out.println(list.isEmpty());
-		//session.close();
-		if(list.isEmpty())
-			return null;
-		
-		
-		return list.get(0);
+		Company company = session.get(Company.class, id);
+
+		return company;
 
 	}
 
@@ -83,7 +112,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company ");
 		List<Company> list = query.list();
-		//session.close();
+		session.close();
 		
 		return list;
 	}

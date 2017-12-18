@@ -35,17 +35,45 @@
 <div class="container">
   <div class="jumbotron">
     <h2><center> wellcome to coupon system</center></h2> 
-   
-    
-    
-  </div>
-  <p></p> 
-  <p>Select a user</p> 
-  <div class="btn-group btn-group-justified">
-  <a href="admin/home" class="btn btn-primary">Admin</a>
-  <a href="admin/company" class="btn btn-primary">Company</a>
-  <a href="admin/customer" class="btn btn-primary">Customer</a>
-</div>
+    </div>
+  <div class="panel-body" style="margin-top: 70px">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>AMOUNT</th>
+					<th>END DATE</th>
+					<th>IMAGE</th>
+					<th>MESSAGE</th>
+					<th>PRICE</th>
+					<th>TITLE</th>
+					<th>TYPE</th>
+					
+
+				</tr>
+			</thead>
+			<tbody>
+				
+					<tr th:each="coup : ${coupons}">
+						<td th:text="${coup.id}"></td>
+						<td th:text="${coup.amount}"></td>
+						<td th:text="${coup.endDate}"></td>
+						<td><img alt="image" th:src="@{|/home/pic/${coup.image}|}"
+							height="42" width="42" /></td>
+						<td th:text="${coup.message}"></td>
+						<td th:text="${coup.price}"></td>
+						<td th:text="${coup.title}"></td>
+						<td th:text="${coup.type}"></td>
+						
+					</tr>
+					
+				
+			</tbody>
+		</table>
+
+
+	</div>
+  
 </div>
 
 

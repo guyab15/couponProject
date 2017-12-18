@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import com.google.common.base.MoreObjects;
 
 @Entity
@@ -27,6 +30,7 @@ public class Company{
 	private String email;
 	
 	@OneToMany
+	//@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private Collection<Coupon> coupons = new ArrayList<>();
 
 

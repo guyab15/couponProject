@@ -2,6 +2,7 @@ package hibrnate.clients;
 import java.sql.Date;
 import java.util.Collection;
 
+import hibernate.exption.CouponProjectException.CouponException;
 import hibrnate.dao.imp.CompanyDBDAO;
 import hibrnate.dao.imp.CouponDBDAO;
 import hibrnate.entity.Company;
@@ -16,16 +17,18 @@ public CompanyFacade() {}
 public CompanyFacade(long id){
 	this.id = id;
 }
-public void createCoupon(Coupon coupon){
+public void createCouponForCompany(Coupon coupon,Company company) throws CouponException{
 	if(!couponDao.checkIfCouponTitleExist(coupon.getTitle())){
 			couponDao.createCoupon(coupon);
+			couponDao.addCouponToCompany(company.getId(),couponDao.getCouponByTitle(coupon.getTitle()).getId() );
 	}else{
-		System.out.println("ישנה כותרת זהה");
+		throw new CouponException("the title exsist , plese change the title");
+		
 	}
 }
 public void removeCoupon(Coupon coupon){
 couponDao.removeCouponFromCompany(coupon.getId(),id);
-couponDao.removeCouponFromCustomer(coupon.getId(),id);
+couponDao.removeCouponFromCustomers(coupon.getId());
 couponDao.removeCoupon(coupon);
 }
 public void updateCoupon(Coupon coupon){
@@ -33,7 +36,11 @@ couponDao.updateCoupon(coupon);
 }
 public Company getCompany(){
 	return companyDao.getCompany(id);
-}                                                                                                                                                                            
+}   
+public Coupon getCoupon(long iD){
+	return couponDao.getCoupon(iD);
+}
+
 public Collection<Coupon> getAllCoupon(){
 return couponDao.getAllCouponByCompanyId(id);
 }
