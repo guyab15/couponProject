@@ -3,14 +3,12 @@ package hibrnate.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import com.google.common.base.MoreObjects;
 
@@ -25,8 +23,7 @@ public class Customer {
 	@NotNull
 	private String password;
 	
-	@ManyToMany
-	//@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@ManyToMany(cascade = CascadeType.ALL)
 	private Collection<Coupon> coupons = new ArrayList<>();
 
 	public Customer() {

@@ -19,13 +19,14 @@ import hibrnate.util.HibernateUtil;
 public class InitSql {
 	public static void main(String[] args) {
 		
-		List<Coupon> list = new ArrayList<Coupon>();
-		Date date = Date.valueOf("2017-09-14");
+		List<Coupon> couponList = new ArrayList<Coupon>();
+		Date dateS = Date.valueOf("2017-12-19");
+		Date dateE = Date.valueOf("2018-12-19");
 		CouponDBDAO coupondb = new CouponDBDAO();
 		for (int i = 0; i <=100; i++) {
-			Coupon coupon = new Coupon("lala", date, date, i, CouponType.TRAVELLING, "ggg", 69D, "tyger");
+			Coupon coupon = new Coupon("lala", dateS, dateE, i, CouponType.TRAVELLING, "ggg", 69D, "tyger");
 			coupondb.createCoupon(coupon);
-			list.add(coupon);
+			couponList.add(coupon);
 		}
 
 		Company company ;
@@ -36,22 +37,29 @@ public class InitSql {
 			company.setEmail("www");
 			company.setPassword(i+"1234");
 			cdd.createCompany(company);
-			coupondb.addCouponToCompany(company.getId(), list.get(i).getId());
+			couponList.get(i).setCompany_id(company.getId());
+			coupondb.addCouponToCompany(company.getId(), couponList.get(i).getId());
 		}
 		
 		
-		Customer customer; 
 		CustomerDBDAO cusdd = new CustomerDBDAO();
 		for (int i = 0; i <=100; i++) {
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+
+			Customer customer; 
 			customer = new Customer();
 			customer.setCustName("a"+i);
 			customer.setPassword(i+"1234");
 			cusdd.createCustomer(customer);
 			int num = i;
-			ArrayList<Coupon> al = (ArrayList<Coupon>) list.stream().filter(x-> x.getId()>num).collect(Collectors.toList());
+			ArrayList<Coupon> al = (ArrayList<Coupon>) couponList.stream().filter(x-> x.getId()>num).collect(Collectors.toList());
+			al.forEach(x->{
+				Coupon cc = session.get(Coupon.class, x.getId());
+				cc.addCustomers(customer);
+				session.update(cc);
+			});
 			
-			Session session = HibernateUtil.getSessionFactory().openSession();
-			session.beginTransaction();
 			Customer c = session.get(Customer.class, customer.getId());
 			c.getCoupns().addAll(al);
 			try {

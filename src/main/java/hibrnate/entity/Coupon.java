@@ -5,15 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -55,16 +53,12 @@ public class Coupon {
 
 	private String image;
 	
-	@ManyToMany(mappedBy="coupons",fetch = FetchType.EAGER)
-	//@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<Customer> customers = new ArrayList<>();
 	
-	@ManyToOne
-	@JoinColumn(name="company_id")
-	//@Cascade(value = { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
-	@JsonIgnore
-	private Company company;
+
+	private Long company_id;
 
 
 	public Coupon() {
@@ -169,21 +163,24 @@ public class Coupon {
 		this.image = image;
 	}
 	
-	public Company getCompany() {
-		return company;
+	
+	public Long getCompany_id() {
+		return company_id;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setCompany_id(Long company_id) {
+		this.company_id = company_id;
 	}
-	
-	
+
 	public List<Customer> getCustomers() {
 		return customers;
 	}
 
 	public void setCustomers(List<Customer> customers) {
 		this.customers = customers;
+	}
+	public void addCustomers(Customer customers) {
+		this.customers.add(customers);
 	}
 
 	@Override
@@ -199,6 +196,7 @@ public class Coupon {
 						.add("message", this.message)
 						.add("price", this.price)
 						.add("image", this.image)
+						.add("company_id", this.company_id)
 						.toString();
 	}
 

@@ -47,7 +47,7 @@ public class CouponDBDAO extends HibernateFactory implements CouponDao {
 		Company company = session.get(Company.class, idCompany);
 		Coupon coupon = session.get(Coupon.class, idCoupon);
 		//add 
-		coupon.setCompany(company);
+		coupon.setCompany_id(company.getId());
 		company.getCoupons().add(coupon);
 		
 		session.getTransaction().commit();
