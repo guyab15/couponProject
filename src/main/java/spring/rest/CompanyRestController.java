@@ -32,8 +32,7 @@ import spring.storage.FileSystemStorageService;
 public class CompanyRestController {
 	@Autowired
 	private FileSystemStorageService storage;
-	@Autowired
-	private Transformator truns;
+	
 	private String pass;
 	private String userName;
 	private CompanyFacade companyFacad;

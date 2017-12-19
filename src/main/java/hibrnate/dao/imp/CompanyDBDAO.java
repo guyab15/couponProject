@@ -84,7 +84,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 	public Company getCompany(long id) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		Company company = session.get(Company.class, id);
+		Company company = (Company)session.get(Company.class, id);
 
 		return company;
 
@@ -96,7 +96,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		Query query = session.createQuery("FROM Company c where c.compName = '" + name + "'");
 		Company company; 
 		try {
-			company = (Company) query.list().get(0);
+			company =  (Company) query.list().get(0);
 		} catch (Exception e) {
 			return null;
 		}

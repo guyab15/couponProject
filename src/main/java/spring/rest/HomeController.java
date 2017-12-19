@@ -22,7 +22,7 @@ public class HomeController {
 	
 	private AdminFacade adminFacad = new AdminFacade();
 	
-	@RequestMapping("/")
+	@RequestMapping({"home","/"})
 	 public ModelAndView companyPage1(Model model) throws IOException{
 		 Collection<Coupon> list = adminFacad.getAllCoupons();
 		 ModelAndView mvc = new ModelAndView("home");
@@ -30,13 +30,6 @@ public class HomeController {
 			return mvc;
 	 }
 
-	 @RequestMapping("/home")
-	 public ModelAndView companyPage(Model model) throws IOException{
-		 Collection<Coupon> list = adminFacad.getAllCoupons();
-		 ModelAndView mvc = new ModelAndView("home");
-	     mvc.addObject("coupons",list);
-			return mvc;
-	 }
 	 
 	 @GetMapping("/home/pic/{imageName:.+}")
 	 public byte[] getImage(@PathVariable(value="imageName") String imageName) throws IOException{

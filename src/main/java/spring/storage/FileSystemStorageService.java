@@ -79,8 +79,11 @@ public class FileSystemStorageService implements StorageService {
     }
     
     public byte[] getImageBytes(String imageName) throws IOException {
-    		if(imageName==null || !ifImageExsist(imageName))
-    			return new byte[0];
+    		if(imageName==null || !ifImageExsist(imageName)) {
+    			File file = new File("/Users/guyAvraham/project/couponProject/src/main/java/spring/storage/images/empty.jpg");
+        		byte[] fileContent = Files.readAllBytes(file.toPath());
+    			return fileContent;
+    		}
     		File file = new File(rootLocation+"/"+imageName);
     		byte[] fileContent = Files.readAllBytes(file.toPath());
     		return fileContent;

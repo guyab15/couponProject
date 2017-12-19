@@ -26,6 +26,7 @@ public class InitSql {
 			Coupon coupon = new Coupon("lala", date, date, i, CouponType.TRAVELLING, "ggg", 69D, "tyger");
 			coupondb.createCoupon(coupon);
 			list.add(coupon);
+			
 		}
 
 		Company company ;
