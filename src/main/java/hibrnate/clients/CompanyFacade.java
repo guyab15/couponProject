@@ -62,8 +62,8 @@ public Collection<Coupon> getAllCouponByDate(Date date){
 	public CouponClientFacade login(String name, String password, ClientType ct) {
 		if(companyDao.checkComp_name(name)){
 			if(companyDao.login(name, password)){
-				Company comp = companyDao.getCompanyByName(name);
-				return new CompanyFacade(comp.getId());
+				Company company = companyDao.getCompanyByName(name);
+				return new CompanyFacade(company.getId());
 			}else{
 				System.out.println("סיסמה לא נכונה");
 				return null;

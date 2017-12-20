@@ -26,12 +26,8 @@ public class InitSql {
 		for (int i = 0; i <=100; i++) {
 			Coupon coupon = new Coupon("lala", dateS, dateE, i, CouponType.TRAVELLING, "ggg", 69D, "tyger");
 			coupondb.createCoupon(coupon);
-<<<<<<< HEAD
-			list.add(coupon);
-			
-=======
+
 			couponList.add(coupon);
->>>>>>> 7d8ecdbaa1276d043c24b2d61eb4c94b778a6d34
 		}
 
 		Company company ;

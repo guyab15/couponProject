@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.hibernate.Query;
 
-
 import hibernate.exption.CouponProjectException;
 import hibernate.exption.CouponProjectException.CompanyException;
 import hibrnate.dao.CompanyDao;
 import hibrnate.dao.HibernateFactory;
 import hibrnate.entity.Company;
 import hibrnate.entity.Coupon;
+import hibrnate.entity.Customer;
 import hibrnate.util.HibernateUtil;
 
 public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
@@ -20,61 +20,69 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 	}
 
 	@Override
-	public void createCompany(Company c) {
+	public void createCompany(Company company) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		session.save(c);
+		session.save(company);
 		session.getTransaction().commit();
 		session.close();
 	}
 
 	@Override
 	public void remove(Company c) {
-		
+
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
+		
 		Company company = session.get(Company.class, c.getId());
-	
-		
-		
-		CouponDBDAO couponDbdao = new CouponDBDAO();
-		List<Coupon> list =  (List<Coupon>) company.getCoupons();
-		for (Coupon coupon : list) {
-			couponDbdao.removeCouponFromCustomers(coupon.getId());
-			couponDbdao.removeCouponFromCompany(coupon.getId(), company.getId());
-			couponDbdao.removeCoupon(coupon);
-		}
-		//session.update(company);
-		session.merge(company);
-		session.clear();
+		if (!company.getCoupons().isEmpty()) {
+			List<Coupon> list = (List<Coupon>) company.getCoupons();
+			System.out.println(list);
+			for (Coupon coupon : list) {
+				System.out.println(coupon.getCustomers());
+				if (!coupon.getCustomers().isEmpty()) {
+					List<Customer> customersList = coupon.getCustomers();
+					System.out.println(customersList);
+					for (Customer customer : customersList) {
+						customer.getCoupns().remove(coupon);
+						session.update(customer);
+					}
 
-		
+					coupon.getCustomers().clear();
+					session.update(coupon);
+				}
+
+			}
+			session.getTransaction().commit();
+			session.beginTransaction();
+			company = session.get(Company.class, c.getId());
+			System.out.println(company);
+		}
 
 		session.delete(company);
 		session.getTransaction().commit();
-		//session.close();
 
 	}
 
 	@Override
-	public void updateCompany(Company c) throws CompanyException {
-		
-		Company comp = getCompany(c.getId());
-		if(comp.getCompName().equals(c.getCompName())){
-			session = HibernateUtil.getSessionFactory().openSession();
-			session.beginTransaction();	
-		session.update(c);
-		session.getTransaction().commit();
-		}else{
+	public void updateCompany(Company company) throws CompanyException {
+
+		Company comp = getCompany(company.getId());
+		if (comp.getCompName().equals(company.getCompName())) {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
-			Query query = session.createQuery("FROM Company c where c.compName = '" + c.getCompName() + "'");
-			List<Company> list = (List<Company>) query.list(); 
-			if(list.size() == 0){
-				session.update(c);
+			session.update(company);
+			session.getTransaction().commit();
+		} else {
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			Query query = session.createQuery("FROM Company c where c.compName = '" + company.getCompName() + "'");
+			List<Company> list = (List<Company>) query.list();
+			if (list.size() == 0) {
+				session.update(company);
 				session.getTransaction().commit();
 				session.close();
-			}else{
+			} else {
 				throw new CouponProjectException.CompanyException("the name company is exisst");
 			}
 		}
@@ -84,7 +92,7 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 	public Company getCompany(long id) {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
-		Company company = (Company)session.get(Company.class, id);
+		Company company = (Company) session.get(Company.class, id);
 
 		return company;
 
@@ -94,15 +102,14 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company c where c.compName = '" + name + "'");
-		Company company; 
+		Company company;
 		try {
-			company =  (Company) query.list().get(0);
+			company = (Company) query.list().get(0);
 		} catch (Exception e) {
 			return null;
 		}
-		//session.close();
-		
-		
+		// session.close();
+
 		return company;
 	}
 
@@ -113,24 +120,24 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		Query query = session.createQuery("FROM Company ");
 		List<Company> list = query.list();
 		session.close();
-		
+
 		return list;
 	}
 
 	@Override
-	public Collection<Coupon> getCoupons(Company c) {
+	public Collection<Coupon> getCoupons(Company company) {
 
-		return c.getCoupons();
+		return company.getCoupons();
 	}
 
 	public boolean checkComp_name(String name) {
-		
+
 		session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company c where c.compName = '" + name + "'");
 		List<Company> list = query.list();
 		session.getTransaction().commit();
-		//session.close();
+		// session.close();
 
 		return list.size() > 0;
 	}
@@ -141,8 +148,8 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session.beginTransaction();
 		Query query = session.createQuery("FROM Company c where c.compName = '" + compName + "'");
 		List<Company> list = query.list();
-		//session.close();
-		
+		// session.close();
+
 		for (Company company : list) {
 			if (company.getPassword().equals(password))
 				return true;
