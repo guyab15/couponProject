@@ -18,22 +18,22 @@ public class AdminFacade implements CouponClientFacade {
 	
 	public  AdminFacade() {	}
 
-	public void createCompany(Company company) throws Exception{
+	public void createCompany(Company comp) throws Exception{
 		
-		if(!companyDao.checkComp_name(company.getCompName())){
-		companyDao.createCompany(company);
+		if(!companyDao.checkComp_name(comp.getCompName())){
+		companyDao.createCompany(comp);
 		}else{
-			throw new CompanyException("createCompany the name " + company.getCompName() + " already exists");
+			throw new CompanyException("createCompany the name " + comp.getCompName() + " already exists");
 		}
 	}
 
-	public void removeCompany(Company company) {
+	public void removeCompany(Company comp) {
 		
-		companyDao.remove(company);
+		companyDao.remove(comp);
 	}
 
-	public void updateCompany(Company company) throws CompanyException {
-		companyDao.updateCompany(company);
+	public void updateCompany(Company comp) throws CompanyException {
+		companyDao.updateCompany(comp);
 	}
 
 	public Company getCompany(long id) throws Exception{
@@ -50,11 +50,11 @@ public class AdminFacade implements CouponClientFacade {
 		return couponDao.getAllCoupons();
 	}
 
-	public void createCustomer(Customer customer) throws CustomerException {
-		if(!customerDao.checkIfCustomerNameExist(customer.getCustName())){
+	public void createCustomer(Customer cus) throws CustomerException {
+		if(!customerDao.checkIfCustomerNameExist(cus.getCustName())){
 				try {
 				
-					customerDao.createCustomer(customer);
+					customerDao.createCustomer(cus);
 				} catch (Exception e) {
 					throw new CustomerException(e.getMessage());
 				}
@@ -63,12 +63,12 @@ public class AdminFacade implements CouponClientFacade {
 			}
 	}
 
-	public void removeCustomer(Customer customer) {
-		customerDao.removeCustomer(customer);
+	public void removeCustomer(Customer cus) {
+		customerDao.removeCustomer(cus);
 	}
 
-	public void updateCustomer(Customer customer) throws CustomerException {
-		customerDao.updateCustomer(customer);
+	public void updateCustomer(Customer cus) throws CustomerException {
+		customerDao.updateCustomer(cus);
 	}
 
 	public Customer getCustomer(long id) throws CustomerException {

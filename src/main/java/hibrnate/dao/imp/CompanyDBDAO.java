@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.hibernate.Query;
 
+
 import hibernate.exption.CouponProjectException;
 import hibernate.exption.CouponProjectException.CompanyException;
 import hibrnate.dao.CompanyDao;
 import hibrnate.dao.HibernateFactory;
 import hibrnate.entity.Company;
 import hibrnate.entity.Coupon;
-import hibrnate.entity.Customer;
 import hibrnate.util.HibernateUtil;
 
 public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
@@ -35,30 +35,21 @@ public class CompanyDBDAO extends HibernateFactory implements CompanyDao {
 		session.beginTransaction();
 		Company company = session.get(Company.class, c.getId());
 	
-		if(!company.getCoupons().isEmpty()){
-			List<Coupon> list =  (List<Coupon>) company.getCoupons();
-			System.out.println(list);
-			for(Coupon coupon: list){
-				System.out.println(coupon.getCustomers());
-				if(!coupon.getCustomers().isEmpty()){
-					List<Customer> customersList = coupon.getCustomers();
-					System.out.println(customersList);
-					for(Customer customer: customersList){
-						customer.getCoupns().remove(coupon);
-						session.update(customer);
-					}
-					
-					coupon.getCustomers().clear();
-					session.update(coupon);
-				}
-
-			}
-			session.getTransaction().commit();
-		}
 		
-		session.beginTransaction();
-		Company co = session.get(Company.class, c.getId());
-		System.out.println(co);
+		
+		CouponDBDAO couponDbdao = new CouponDBDAO();
+		List<Coupon> list =  (List<Coupon>) company.getCoupons();
+		for (Coupon coupon : list) {
+			couponDbdao.removeCouponFromCustomers(coupon.getId());
+			couponDbdao.removeCouponFromCompany(coupon.getId(), company.getId());
+			couponDbdao.removeCoupon(coupon);
+		}
+		//session.update(company);
+		session.merge(company);
+		session.clear();
+
+		
+
 		session.delete(company);
 		session.getTransaction().commit();
 		//session.close();
