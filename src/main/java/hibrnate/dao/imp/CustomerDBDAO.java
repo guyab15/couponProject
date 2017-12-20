@@ -125,6 +125,7 @@ public class CustomerDBDAO extends HibernateFactory implements CustomerDao {
 		Customer customer = session.get(Customer.class, cusId);
 		Coupon coupon = session.get(Coupon.class, couponId);
 		customer.getCoupns().add(coupon);
+		coupon.getCustomers().add(customer);
 		session.getTransaction().commit();
 		session.close();
 	}

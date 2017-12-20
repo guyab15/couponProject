@@ -32,17 +32,17 @@ public class Customerfacade implements CouponClientFacade {
 	public Coupon getCouponById(long id){
 		return couponDao.getCoupon(id);
 	}
-	public void purchaseCoupon(Coupon cop) throws CustomerException {
+	public void purchaseCoupon(Coupon coupon) throws CustomerException {
 
-		if (!customerDao.checkIfCustomerBoughtCoupon(id, cop.getId())) {
+		if (!customerDao.checkIfCustomerBoughtCoupon(id, coupon.getId())) {
 			// check if coupon expires
 			Date now = Date.valueOf(LocalDate.now().toString());
-			Date end = (Date) cop.getEndDate();
+			Date end = (Date) coupon.getEndDate();
 			if (end.compareTo(now) == 0 || end.compareTo(now) > 0) {
-				if (cop.getAmount() > 0) {
-					customerDao.buyCoupon(id, cop.getId());
-					cop.setAmount(couponDao.getCoupon(cop.getId()).getAmount() - 1);
-					couponDao.updateCoupon(cop);
+				if (coupon.getAmount() > 0) {
+					customerDao.buyCoupon(id, coupon.getId());
+					coupon.setAmount(couponDao.getCoupon(coupon.getId()).getAmount() - 1);
+					couponDao.updateCoupon(coupon);
 				} else {
 					throw new CustomerException("קופון אזל מהמלאי");
 				}

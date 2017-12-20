@@ -13,7 +13,7 @@ public class dailyCouponExpriationTask implements Runnable {
 	public void run() {
 		Collection<Coupon> collection = coupDao.getAllCouponExpired();
 		for (Coupon coupon : collection) {
-			coupDao.removeCouponFromCompany(coupon.getId(), coupon.getCompany().getId());
+			coupDao.removeCouponFromCompany(coupon.getId(), coupon.getCompany_id());
 			coupDao.removeCouponFromCustomer(coupon.getId(),0);
 			coupDao.removeCoupon(coupon);
 		}

@@ -92,7 +92,7 @@ public class CompanyRestController {
 		Coupon coupon = new Coupon(title, startDate,endDate, amount, CouponType.valueOf(type), message, price, image.getOriginalFilename());
 		System.out.println(coupon);
 	 
-		coupon.setCompany(companyFacad.getCompany());
+		coupon.setCompany_id(companyFacad.getCompany().getId());
 		 try {
 			 companyFacad.createCouponForCompany(coupon, companyFacad.getCompany());
 			 storage.store(image);
